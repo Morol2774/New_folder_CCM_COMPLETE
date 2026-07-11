@@ -1,0 +1,1023 @@
+<!-- CCM Dashboard Fragment
+All styles, HTML, and scripts for RepairDocs
+Loaded into index.html panel via fetch()
+-->
+
+<style>
+
+        html, body { height: 100%; }
+        body {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: 400;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .content {
+            min-height: 250px;
+            padding: 0;
+            margin: 0;
+        }
+
+        :root {
+            --surface-ground: #eff3f8;
+            --surface-card: #ffffff;
+            --surface-border: #dfe7ef;
+            --primary-color: #3B82F6;
+        }
+
+        /* Input */
+        body .p-inputtext {
+            border: 1px solid #d2d6de;
+            width: 100%;
+            padding: .75rem;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: background-color .2s, color .2s, border-color .2s, box-shadow .2s;
+            appearance: none;
+        }
+        body .p-inputtext:enabled:hover { border-color: #3b82f6; }
+        body .p-inputtext:enabled:focus {
+            outline: 0 none;
+            outline-offset: 0;
+            box-shadow: 0 0 0 .2rem #bfdbfe;
+            border-color: #3b82f6;
+        }
+
+        .p-button {
+            color: #fff;
+            background: #3c8dbc;
+            border: 1px solid #3c8dbc;
+            border-radius: 4px;
+            padding: 6px 12px;
+            display: inline-block;
+        }
+
+        /* Cards */
+        .instruction-card-item {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .instruction-card-item:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .card-header-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .card-title-block {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .card-title-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .model-badge {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .meta-badge {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        .card-details-expanded {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+            cursor: default;
+        }
+        .table-jobs, .table-faults {
+            width: 100%;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border-collapse: collapse;
+        }
+        .table-jobs th, .table-jobs td,
+        .table-faults th, .table-faults td {
+            border: 1px solid #cbd5e1;
+            padding: 8px;
+            font-size: 13px;
+            text-align: left;
+        }
+        .table-jobs th, .table-faults th {
+            background-color: #f8fafc;
+            color: #334155;
+            font-weight: 600;
+        }
+        .notes-block {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 10px;
+            margin-top: 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 13px;
+            color: #451a03;
+        }
+
+        /* Sidebar */
+        .p-sidebar-right {
+            min-width: 28em;
+            width: 450px;
+            position: fixed;
+            right: -450px;
+            top: 0;
+            height: 100%;
+            background: #fff;
+            box-shadow: -2px 0 8px rgba(0,0,0,0.15);
+            transition: right 0.3s ease;
+            z-index: 1050;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .p-sidebar-active { right: 0 !important; }
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 1040;
+            display: none;
+        }
+        .sidebar-backdrop.show-backdrop { display: block; }
+        .custom-sidebar-header-block {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f4f4f4;
+        }
+
+        /* Pagination info text */
+        #pagination-info {
+            font-size: 13px;
+            color: #555;
+        }
+    
+
+        /* Override Bootstrap col padding */
+        .col-md-4, .col-md-6, .col-md-12 {
+            padding: 0 !important;
+        }
+        
+        .col-xs-12, .col-sm-12 {
+            padding: 0 !important;
+        }
+        
+        .row {
+            margin: 0 !important;
+        }
+        
+        /* Remove wrapper padding */
+        .wrapper {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        /* Full width */
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        
+        /* Keep sidebar visible even when CCM is open */
+.sidebar, .main-sidebar {
+    display: block !important;
+    visibility: visible !important;
+    width: auto !important;
+    margin-left: 0 !important;
+}
+/* Hide sidebar */
+        .p-sidebar-left, .left-sidebar, .sidebar {
+            display: none !important;
+        }
+        
+        /* Full width for content */
+        .wrapper, .content-wrapper {
+            margin-left: 0 !important;
+            width: 100% !important;
+        }
+
+        </style>
+
+
+
+<div class="wrapper" style="height: auto; min-height: 100%;">
+
+    <!-- Header -->
+    
+
+    <!-- Content -->
+    <div class="content-wrapper" style="min-height: 90vh;">
+        <div class="content">
+            <div class="nav-tabs-custom">
+                <div class="tab-content">
+                    <div class="box box-primary">
+
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Repair Dashboard</h3>
+                        </div>
+
+                        <div class="box-body">
+
+                            <!-- Search Fields -->
+                            <div class="row" style="gap: 15px; display: flex;">
+                                <div class="col-md-4" style="flex: 1; min-width: 0;">
+                                    <div class="form-group">
+                                        <label>Device Model / Part Number</label>
+                                        <input type="text" id="search-partNumber" class="p-inputtext" placeholder="e.g. GENERIC, ABC123">
+                            </div>
+                            <div style="margin-bottom:10px;">
+                                <label>Category:</label>
+                                <input type="text" id="search-category" class="p-inputtext" placeholder="e.g. Card Printers, Printer">
+                            </div>
+                                </div>
+                                <div class="col-md-4" style="flex: 1; min-width: 0;">
+                                    <div class="form-group">
+                                        <label>Component / Category (optional)</label>
+                                        <input type="text" id="search-component" class="p-inputtext" placeholder="e.g. Screen, Motherboard...">
+                                    </div>
+                                </div>
+                                <div class="col-md-4" style="flex: 1; min-width: 0;">
+                                    <div class="form-group">
+                                        <label>Symptom (optional)</label>
+                                        <input type="text" id="search-symptom" class="p-inputtext" placeholder="e.g. Broken screen, Bootloop...">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Search Button Row -->
+                            <div class="row" style="margin-top: 0;">
+                                <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <button type="button" id="search-btn-submit" class="p-button">
+                                        <i class="fa fa-filter" aria-hidden="true"></i>
+                                        <span> Search</span>
+                                    </button>
+                                    <button type="button" id="open-create-panel-btn" class="p-button" style="background: #22c55e; border-color: #22c55e; display: none;">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                        <span> Create Document</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Results label -->
+                            <div style="margin-top: 25px; font-size:12px; font-weight:700; color:#4a5280; text-transform:uppercase; letter-spacing:.8px; margin-bottom:16px;">Results</div>
+
+                            <!-- Cards container -->
+                            <div class="smart-search-results" id="search-results-container"></div>
+
+                            <!-- Pagination -->
+                            <div id="pagination-block" style="margin-top: 20px; display: none;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <span id="pagination-info"></span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <button id="page-first" title="First Page" class="btn btn-default btn-sm" disabled><i class="fa fa-angle-double-left"></i></button>
+                                        <button id="page-prev" title="Previous Page" class="btn btn-default btn-sm" style="margin-left: 5px;" disabled><i class="fa fa-angle-left"></i></button>
+                                        <span id="page-numbers" style="margin-left: 5px;"></span>
+                                        <button id="page-next" title="Next Page" class="btn btn-default btn-sm" style="margin-left: 5px;"><i class="fa fa-angle-right"></i></button>
+                                        <button id="page-last" title="Last Page" class="btn btn-default btn-sm" style="margin-left: 5px;"><i class="fa fa-angle-double-right"></i></button>
+                                        <select id="page-size-select" class="form-control" style="width: auto; display: inline-block; margin-left: 10px; font-size:13px;">
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- /.box-body -->
+
+                        <div class="box-footer text-right">
+                            <button type="button" class="btn btn-default">Close</button>
+                        </div>
+
+                    </div><!-- /.box -->
+                </div>
+            </div>
+        </div>
+    </div><!-- /.content-wrapper -->
+
+    
+
+</div><!-- /.wrapper -->
+
+<!-- Sidebar backdrop -->
+<div class="sidebar-backdrop" id="sidebar-shadow"></div>
+
+<!-- Right Sidebar -->
+<div class="p-sidebar-right" id="custom-right-sidebar">
+    <div class="custom-sidebar-header-block">
+        <h4 id="sidebar-panel-title" style="margin: 0; font-weight:700; color:#1e293b;">Instruction Details</h4>
+        <button type="button" id="close-sidebar-x-btn" class="btn btn-sm btn-default" style="border-radius:50%; width:30px; height:30px; padding:0;">
+            <span class="fa fa-times"></span>
+        </button>
+    </div>
+    <div class="p-sidebar-content" id="sidebar-dynamic-content-area"></div>
+</div>
+
+<!-- jQuery -->
+
+
+
+
+
+
+<script>
+$(document).ready(function() {
+
+    // ─── LOAD DATA FROM JSON ────────────────────────────────────────────────
+    
+    
+$(document).ready(function() {
+
+    // ─── CONFIG ───────────────────────────────────────────────────────────────
+    let isAdmin = true; // Admin page — no password required
+    let dataLoaded = false; // Flag to check if JSON is loaded
+    let instructions = [];
+    
+    // ─── LOAD DATA FROM JSON ────────────────────────────────────────────────
+    fetch('./data/instructions.json')
+        .then(response => response.json())
+        .then(data => {
+            instructions = data;
+            dataLoaded = true;
+            console.log('✓ Loaded ' + instructions.length + ' instructions from JSON');
+        })
+        .catch(error => {
+            console.error('❌ Error loading instructions.json:', error);
+            alert('❌ ERROR: Could not load instructions.json');
+            dataLoaded = false;
+        });
+
+    const CONTRACT_TYPES = [
+        "Billable (Fixed Price Repair)",
+        "Comprehensive Coverage Repair",
+        "Non-comprehensive coverage repair / Z1C SV Contract / Non-Billable",
+        "Spare pool repair as new",
+        "Spare pool repair as standard",
+        "Warranty repair"
+    ];
+
+    // ─── DATA ─────────────────────────────────────────────────────────────────
+
+    if (localStorage.getItem("ccm_docs_store")) {
+        instructions = JSON.parse(localStorage.getItem("ccm_docs_store"));
+    } else {
+        localStorage.setItem("ccm_docs_store", JSON.stringify(instructions));
+    }
+
+    function persistStore() {
+        localStorage.setItem("ccm_docs_store", JSON.stringify(instructions));
+    }
+
+    // ─── PAGINATION STATE ─────────────────────────────────────────────────────
+    let currentPage = 1;
+    let pageSize = 10;
+    let currentFilteredData = [];
+
+    function updatePagination() {
+        const total = currentFilteredData.length;
+        const totalPages = Math.ceil(total / pageSize);
+
+        if (total === 0) { $('#pagination-block').hide(); return; }
+
+        $('#pagination-block').show();
+        const from = (currentPage - 1) * pageSize + 1;
+        const to   = Math.min(currentPage * pageSize, total);
+        $('#pagination-info').text('Total Records: ' + total + '  Showing ' + from + ' to ' + to + ' of ' + total);
+
+        let pagesHtml = '';
+        const start = Math.max(1, currentPage - 2);
+        const end   = Math.min(totalPages, currentPage + 2);
+        for (let p = start; p <= end; p++) {
+            pagesHtml += (p === currentPage)
+                ? '<button class="btn btn-primary btn-sm page-num-btn" style="margin-left:5px; cursor:default;" data-page="' + p + '">' + p + '</button>'
+                : '<button class="btn btn-default btn-sm page-num-btn" style="margin-left:5px;" data-page="' + p + '">' + p + '</button>';
+        }
+        $('#page-numbers').html(pagesHtml);
+        $('#page-first, #page-prev').prop('disabled', currentPage === 1);
+        $('#page-next, #page-last').prop('disabled', currentPage === totalPages);
+    }
+
+    function renderPage() {
+        const start    = (currentPage - 1) * pageSize;
+        const pageData = currentFilteredData.slice(start, start + pageSize);
+        renderSearchResults(pageData);
+        updatePagination();
+    }
+
+    $('#page-first').on('click', function() { currentPage = 1; renderPage(); });
+    $('#page-prev').on('click',  function() { if (currentPage > 1) { currentPage--; renderPage(); } });
+    $('#page-next').on('click',  function() { if (currentPage < Math.ceil(currentFilteredData.length / pageSize)) { currentPage++; renderPage(); } });
+    $('#page-last').on('click',  function() { currentPage = Math.ceil(currentFilteredData.length / pageSize) || 1; renderPage(); });
+    $(document).on('click', '.page-num-btn', function() { currentPage = parseInt($(this).data('page')); renderPage(); });
+    $('#page-size-select').on('change', function() { pageSize = parseInt($(this).val()); currentPage = 1; renderPage(); });
+
+    // ─── RENDER CARDS ─────────────────────────────────────────────────────────
+    function renderSearchResults(filteredData) {
+        const container = $('#search-results-container');
+        container.empty();
+
+        if (filteredData.length === 0 && currentFilteredData.length === 0) {
+            container.html(
+                '<div style="text-align:center; padding:40px 20px; color:#64748b;">' +
+                '<i class="fa-solid fa-magnifying-glass" style="font-size:30px; margin-bottom:12px; display:block; color:#94a3b8;"></i>' +
+                '<div style="font-weight:600; font-size:15px; margin-bottom:4px;">No instructions found</div>' +
+                '<div style="font-size:13px; color:#94a3b8;">Try changing your model number, component or symptom filters</div>' +
+                '</div>'
+            );
+            $('#pagination-block').hide();
+            return;
+        }
+
+        filteredData.forEach(function(ins) {
+
+            let jobRowsHtml = '';
+            if (ins.jobTypes && ins.jobTypes.length > 0) {
+                ins.jobTypes.forEach(function(j) {
+                    jobRowsHtml += '<tr><td><strong>' + escapeHtml(j.jobType) + '</strong></td><td>' + escapeHtml(j.action) + '</td></tr>';
+                });
+            } else {
+                jobRowsHtml = '<tr><td colspan="2" class="text-muted">No actions configured</td></tr>';
+            }
+
+            let faultRowsHtml = '';
+            if (ins.faultCodes && ins.faultCodes.length > 0) {
+                ins.faultCodes.forEach(function(f) {
+                    faultRowsHtml += '<tr><td><strong>' + escapeHtml(f.system) + '</strong></td><td>' + escapeHtml(f.code) + '</td></tr>';
+                });
+            } else {
+                faultRowsHtml = '<tr><td colspan="2" class="text-muted">No fault codes mapped</td></tr>';
+            }
+
+            let photoHtml = (ins.photo && ins.photo.trim() !== '')
+                ? '<img src="' + escapeHtml(ins.photo) + '" style="width:100%; height:auto; max-height:400px; object-fit:contain; border-radius:6px; border:1px solid #cbd5e1; margin-top:5px; display:block;">'
+                : '<span class="text-muted" style="font-size:13px;">No photo</span>';
+
+            let notesHtml = (ins.notes && ins.notes.trim() !== '')
+                ? '<div class="notes-block"><i class="fa fa-sticky-note" style="margin-right:6px;"></i>' + escapeHtml(ins.notes) + '</div>'
+                : '';
+
+            let adminBtns = isAdmin
+                ? '<button type="button" class="btn btn-xs btn-primary edit-ins-trigger" data-id="' + ins.id + '" style="padding:2px 6px; font-size:11px;"><i class="fa fa-edit"></i> Edit</button>' +
+                  '<button type="button" class="btn btn-xs btn-danger delete-ins-trigger" data-id="' + ins.id + '" style="margin-left:4px; padding:2px 6px; font-size:11px;"><i class="fa fa-trash"></i> Delete</button>'
+                : '';
+
+            let cardHtml =
+                '<div class="instruction-card-item" data-id="' + ins.id + '">' +
+                    '<div class="card-header-summary">' +
+                        '<div class="card-title-block">' +
+                            '<span style="font-weight:700; color:#4a5280; font-family:monospace; font-size:14px;">[' + escapeHtml(ins.id) + ']</span>' +
+                            '<div class="card-title-text">' + escapeHtml(ins.title) + '</div>' +
+                                                        '<div class="meta-badge">' + escapeHtml(ins.category) + '</div>' +
+                            '<div class="meta-badge">' + escapeHtml(ins.subcategory) + '</div>' +
+                            '<div class="meta-badge" style="background:#fff7ed; color:#c2410c;">' + escapeHtml(ins.symptom) + '</div>' +
+                        '</div>' +
+                        '<div style="display: flex; gap: 8px; align-items:center; flex-wrap:wrap;">' +
+                            '<span class="text-muted" style="font-size: 11px;">Upd: ' + ins.updatedAt + '</span>' +
+                            adminBtns +
+                            '<i class="fa fa-chevron-down text-muted accordion-arrow" style="margin-left:auto; transition: transform 0.2s;"></i>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="card-details-expanded">' +
+                        '<div class="row">' +
+                            '<div style="width:60%; padding-right:15px; float:left;">' +
+                                '<strong style="font-size:13px; color:#334155;">Photo</strong><br>' +
+                                photoHtml +
+                            '</div>' +
+                            '<div style="width:40%; float:left;">' +
+                                '<strong style="font-size:13px; color:#334155;">Job Types &amp; Actions</strong>' +
+                                '<table class="table-jobs"><thead><tr><th>Job Type</th><th>Required Action</th></tr></thead><tbody>' + jobRowsHtml + '</tbody></table>' +
+                                '<br><strong style="font-size:13px; color:#334155;">Fault Codes</strong>' +
+                                '<table class="table-faults"><thead><tr><th>System</th><th>Code</th></tr></thead><tbody>' + faultRowsHtml + '</tbody></table>' +
+                            '</div>' +
+                        '</div>' +
+                        notesHtml +
+                    '</div>' +
+                '</div>';
+
+            container.append(cardHtml);
+        });
+    }
+
+    // ─── ACCORDION ────────────────────────────────────────────────────────────
+    $(document).on('click', '.instruction-card-item', function(e) {
+        if ($(e.target).closest('button').length) return;
+        const expandedSection = $(this).find('.card-details-expanded');
+        const arrow = $(this).find('.accordion-arrow');
+        expandedSection.slideToggle(200);
+        const isExpanded = expandedSection.is(':visible');
+        arrow.get(0).style.setProperty('transform', isExpanded ? 'rotate(180deg)' : 'none', 'important');
+    });
+
+    // ─── SEARCH ───────────────────────────────────────────────────────────────
+    function runSmartSearch() {
+        if (!dataLoaded) {
+            console.warn('⏳ Data still loading...');
+            setTimeout(runSmartSearch, 100);
+            return;
+        }
+        
+        const partNumberQuery = $('#search-partNumber').val().trim().toLowerCase();
+        const categoryQuery = $('#search-category').val().trim().toLowerCase();
+        const compQuery    = $('#search-component').val().trim().toLowerCase();
+        const symptomQuery = $('#search-symptom').val().trim().toLowerCase();
+
+        currentFilteredData = instructions.filter(function(ins) {
+            const matchPartNumber = !partNumberQuery || ins.partNumber.toLowerCase().includes(partNumberQuery) || ins.title.toLowerCase().includes(partNumberQuery) || ins.id.toLowerCase().includes(partNumberQuery);
+            const matchCategory = !categoryQuery || ins.category.toLowerCase().includes(categoryQuery);
+            const matchComp    = !compQuery    || ins.subcategory.toLowerCase().includes(compQuery)    || ins.title.toLowerCase().includes(compQuery);
+            const matchSymptom = !symptomQuery || ins.symptom.toLowerCase().includes(symptomQuery);
+            return matchPartNumber && matchCategory && matchComp && matchSymptom;
+        });
+
+        currentPage = 1;
+        renderPage();
+    }
+
+    // Don't trigger search on input until data is loaded
+    let searchReadyTimer = setInterval(function() {
+        if (dataLoaded) {
+            clearInterval(searchReadyTimer);
+            $('#search-partNumber, #search-category, #search-component, #search-symptom').on('input', runSmartSearch);
+            $('#search-btn-submit').on('click', runSmartSearch);
+            console.log('✓ Search handlers activated - ready to search');
+        }
+    }, 100);
+
+    // ─── SIDEBAR ──────────────────────────────────────────────────────────────
+    function openSidebar(title, contentHtml) {
+        $('#sidebar-panel-title').text(title);
+        $('#sidebar-dynamic-content-area').html(contentHtml);
+        $('#custom-right-sidebar').addClass('p-sidebar-active');
+        $('#sidebar-shadow').addClass('show-backdrop');
+    }
+
+    function closeSidebar() {
+        $('#custom-right-sidebar').removeClass('p-sidebar-active');
+        $('#sidebar-shadow').removeClass('show-backdrop');
+    }
+
+    $('#close-sidebar-x-btn, #sidebar-shadow').on('click', closeSidebar);
+
+    // ─── ADMIN MODE ACTIVE ON LOAD ────────────────────────────────────────────
+    $('#open-create-panel-btn').show();
+
+    // ─── CRUD: CREATE ─────────────────────────────────────────────────────────
+    const CATEGORY_OPTIONS = [
+        'Card Printers', 'Consumables', 'Cradles', 'Desktop Printers',
+        'Headset', 'Industrial Printers', 'Kiosk', 'Mobile Computers',
+        'Mobile Printers', 'PSION products', 'Scanners', 'Tablets',
+        'Terminals', 'Touch Computers'
+    ];
+
+    $('#open-create-panel-btn').on('click', function() {
+        const categoryOpts = CATEGORY_OPTIONS.map(function(c) {
+            return '<option value="' + c + '">' + c + '</option>';
+        }).join('');
+
+        const formHtml =
+            '<form id="instruction-crud-form">' +
+            '<input type="hidden" id="form-ins-id" value="">' +
+
+            // Category dropdown
+            '<div class="form-group">' +
+            '<label style="font-weight:600;">Category <span style="color:#e53e3e;">*</span></label>' +
+            '<select id="form-category" class="form-control" required style="border:1px solid #d2d6de; border-radius:6px; font-size:14px; height:38px;">' +
+            '<option value="" disabled selected>— Select category —</option>' +
+            categoryOpts +
+            '</select></div>' +
+
+            // Part Number
+            '<div class="form-group">' +
+            '<label style="font-weight:600;">Part Number <span style="color:#e53e3e;">*</span></label>' +
+            '<input type="text" id="form-partNumber" class="p-inputtext" placeholder="e.g. GENERIC, ABC123">' +
+            '</div>' +
+
+            // Subcategory
+            '<div class="form-group">' +
+            '<label style="font-weight:600;">Subcategory <span style="color:#e53e3e;">*</span></label>' +
+            '<input type="text" id="form-subcategory" class="p-inputtext" required placeholder="e.g. Screen, Housing, Battery">' +
+            '</div>' +
+
+            // Symptom
+            '<div class="form-group">' +
+            '<label style="font-weight:600;">Symptom <span style="color:#e53e3e;">*</span></label>' +
+            '<input type="text" id="form-symptom" class="p-inputtext" required placeholder="e.g. Broken screen, No power">' +
+            '</div>' +
+
+            // Title
+            '<div class="form-group">' +
+            '<label style="font-weight:600;">Instruction Title <span style="color:#e53e3e;">*</span></label>' +
+            '<input type="text" id="form-title" class="p-inputtext" required placeholder="e.g. TC210 Screen Replacement">' +
+            '</div>' +
+
+            // Photo above tables — full width
+            '<div class="form-group">' +
+            '<label style="font-weight:600;">Photo <span style="color:#94a3b8; font-weight:400;">(optional)</span></label>' +
+            '<div style="display:flex; gap:12px; align-items:flex-start; margin-top:4px;">' +
+            '<div id="photo-drop-zone" style="border:2px dashed #cbd5e1; border-radius:8px; padding:12px 16px; text-align:center; cursor:pointer; background:#fafafa; transition:border-color .2s; min-width:140px; width:140px; display:flex; flex-direction:column; justify-content:center; align-items:center;">' +
+            '<i class="fa fa-cloud-upload-alt" style="font-size:22px; color:#94a3b8; margin-bottom:6px;"></i>' +
+            '<div style="font-size:11px; font-weight:600; color:#475569;">Upload photo</div>' +
+            '<div style="font-size:10px; color:#94a3b8; margin-top:3px; line-height:1.4;">JPG, PNG, WebP</div>' +
+            '<input type="file" id="form-photo-file" accept="image/jpeg,image/png,image/webp" style="display:none;">' +
+            '</div>' +
+            '<div id="photo-preview-wrap" style="display:none; position:relative; width:140px;">' +
+            '<img id="photo-preview-img" src="" style="width:140px; height:100px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; display:block;">' +
+            '<button type="button" id="photo-remove-btn" style="position:absolute; top:-8px; right:-8px; background:#ef4444; border:none; border-radius:50%; width:22px; height:22px; color:#fff; font-size:11px; cursor:pointer; line-height:22px; padding:0;"><i class="fa fa-times"></i></button>' +
+            '</div>' +
+            '</div>' +
+            '<input type="hidden" id="form-photo" value="">' +
+            '</div>' +
+
+            // Job Types table — full width, Job Type 50% / Required Action 50%
+            '<div class="form-group">' +
+            '<label style="font-weight:600;">Job Type &amp; Required Action</label>' +
+            '<div style="border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; margin-top:4px;">' +
+            '<table style="width:100%; border-collapse:collapse; table-layout:fixed;">' +
+            '<thead><tr style="background:#f8fafc;">' +
+            '<th style="padding:8px 10px; font-size:12px; font-weight:700; color:#475569; border-bottom:1px solid #e2e8f0; width:50%;">Job Type</th>' +
+            '<th style="padding:8px 10px; font-size:12px; font-weight:700; color:#475569; border-bottom:1px solid #e2e8f0; width:50%;">Required Action</th>' +
+            '</tr></thead>' +
+            '<tbody id="form-jobtypes-wrapper">' +
+            buildFixedJobRow('Billable (Fixed Price Repair)') +
+            buildFixedJobRow('Comprehensive Coverage Repair') +
+            buildFixedJobRow('Non-comprehensive coverage repair / Z1C SV Contract (selected products) / Non-Billable') +
+            buildFixedJobRow('Spare pool repair as new') +
+            buildFixedJobRow('Spare pool repair as standard') +
+            buildFixedJobRow('Warranty repair') +
+            '</tbody></table></div>' +
+            '</div>' +
+
+            // Fault Codes table
+            '<div class="form-group">' +
+            '<label style="font-weight:600;">Fault Code</label>' +
+            '<div style="border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; margin-top:4px;">' +
+            '<table style="width:100%; border-collapse:collapse; table-layout:fixed;">' +
+            '<thead><tr style="background:#f8fafc;">' +
+            '<th style="padding:8px 10px; font-size:12px; font-weight:700; color:#475569; border-bottom:1px solid #e2e8f0; width:30%;">System</th>' +
+            '<th style="padding:8px 10px; font-size:12px; font-weight:700; color:#475569; border-bottom:1px solid #e2e8f0; width:64%;">Fault Code</th>' +
+            '<th style="width:6%; border-bottom:1px solid #e2e8f0;"></th>' +
+            '</tr></thead>' +
+            '<tbody id="form-faults-wrapper">' +
+            buildFaultRow('Siebel', '') +
+            '</tbody></table></div>' +
+            '<button type="button" id="add-fault-row-btn" class="btn btn-xs btn-default" style="margin-top:6px;"><i class="fa fa-plus"></i> Add row</button>' +
+            '</div>' +
+
+            // Notes
+            '<div class="form-group">' +
+            '<label style="font-weight:600;">Notes / Tips <span style="color:#94a3b8; font-weight:400;">(optional)</span></label>' +
+            '<label>Groups (comma-separated):</label>' +
+            '<input type="text" id="form-groups" class="p-inputtext" placeholder="e.g. group1, group2" style="margin-bottom:10px;width:100%;padding:5px;border:1px solid #ddd;border-radius:3px">' +
+            
+            '</div>' +
+
+            // Buttons
+            '<div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px; padding-top:16px; border-top:1px solid #e2e8f0;">' +
+            '<button type="button" class="btn btn-default" id="btn-sidebar-cancel">Cancel</button>' +
+            '<button type="submit" class="p-button" style="background:#3b82f6; border-color:#3b82f6; border-radius:4px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>' +
+            '</div>' +
+            '</form>';
+
+        openSidebar('Create Document', formHtml);
+
+        // Photo drop zone
+        $('#photo-drop-zone').on('click', function() { $('#form-photo-file').click(); });
+        $('#photo-drop-zone').on('dragover', function(e) { e.preventDefault(); $(this).css('border-color','#3b82f6'); });
+        $('#photo-drop-zone').on('dragleave', function() { $(this).css('border-color','#cbd5e1'); });
+        $('#photo-drop-zone').on('drop', function(e) {
+            e.preventDefault();
+            $(this).css('border-color','#cbd5e1');
+            const file = e.originalEvent.dataTransfer.files[0];
+            if (file) handlePhotoFile(file);
+        });
+        $('#form-photo-file').on('change', function() {
+            if (this.files[0]) handlePhotoFile(this.files[0]);
+        });
+        $(document).on('click', '#photo-remove-btn', function() {
+            $('#photo-preview-wrap').hide();
+            $('#photo-drop-zone').show();
+            $('#form-photo').val('');
+        });
+    });
+
+    function buildJobRow(jobType, action) {
+        return '<tr class="jobtype-row-item" style="border-bottom:1px solid #f1f5f9;">' +
+            '<td style="padding:6px 8px;">' +
+            '<input type="text" class="form-control form-job-type-item" placeholder="Job Type" value="' + escapeHtml(jobType) + '" style="font-size:13px; height:32px;">' +
+            '</td>' +
+            '<td style="padding:6px 8px;">' +
+            '<input type="text" class="form-control form-job-action-item" placeholder="Required Action" value="' + escapeHtml(action) + '" style="font-size:13px; height:32px;">' +
+            '</td>' +
+            '<td style="padding:6px 4px; text-align:center;">' +
+            '<button type="button" class="btn btn-xs btn-link remove-jobtype-row-btn" style="color:#ef4444; padding:2px 5px;"><i class="fa fa-times"></i></button>' +
+            '</td></tr>';
+    }
+
+    function buildFixedJobRow(jobType, action) {
+        action = action || '';
+        return '<tr class="jobtype-row-item" style="border-bottom:1px solid #f1f5f9;">' +
+            '<td style="padding:8px 10px; font-size:13px; color:#334155; background:#f8fafc; vertical-align:middle;">' +
+            '<input type="hidden" class="form-job-type-item" value="' + escapeHtml(jobType) + '">' +
+            escapeHtml(jobType) +
+            '</td>' +
+            '<td style="padding:5px 8px; vertical-align:middle;">' +
+            '<input type="text" class="form-control form-job-action-item" placeholder="e.g. Replace, Scrap..." value="' + escapeHtml(action) + '" style="font-size:13px; height:32px;">' +
+            '</td>' +
+            '</tr>';
+    }
+
+    function buildFaultRow(system, code) {
+        return '<tr class="fault-row-item" style="border-bottom:1px solid #f1f5f9;">' +
+            '<td style="padding:6px 8px;">' +
+            '<input type="text" class="form-control form-fault-system-item" placeholder="e.g. Siebel" value="' + escapeHtml(system) + '" style="font-size:13px; height:32px;">' +
+            '</td>' +
+            '<td style="padding:6px 8px;">' +
+            '<input type="text" class="form-control form-fault-code-item" placeholder="e.g. DISPLAY-BROKEN" value="' + escapeHtml(code) + '" style="font-size:13px; height:32px;">' +
+            '</td>' +
+            '<td style="padding:6px 4px; text-align:center;">' +
+            '<button type="button" class="btn btn-xs btn-link remove-fault-row-btn" style="color:#ef4444; padding:2px 5px;"><i class="fa fa-times"></i></button>' +
+            '</td></tr>';
+    }
+
+    function handlePhotoFile(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const dataUrl = e.target.result;
+            $('#form-photo').val(dataUrl);
+            $('#photo-preview-img').attr('src', dataUrl);
+            $('#photo-drop-zone').hide();
+            $('#photo-preview-wrap').css('display', 'inline-block');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Add/remove Job Type rows
+    $(document).on('click', '#add-jobtype-row-btn', function() {
+        $('#form-jobtypes-wrapper').append(buildJobRow('', ''));
+    });
+    $(document).on('click', '.remove-jobtype-row-btn', function() {
+        if ($('.jobtype-row-item').length > 1) { $(this).closest('.jobtype-row-item').remove(); }
+    });
+
+    // ─── CRUD: EDIT ───────────────────────────────────────────────────────────
+    $(document).on('click', '.edit-ins-trigger', function(e) {
+        e.stopPropagation();
+        const id   = $(this).data('id').toString();
+        const item = instructions.find(function(ins) { return ins.id === id; });
+        if (!item) return;
+
+        let jobInputsHtml = '';
+        CONTRACT_TYPES.forEach(function(contract) {
+            const match         = item.jobTypes ? item.jobTypes.find(function(j) { return j.jobType === contract; }) : null;
+            const currentAction = match ? match.action : '';
+            jobInputsHtml +=
+                '<div class="form-group" style="margin-bottom:10px;">' +
+                '<label style="font-size:11px; color:#555; margin-bottom:2px; font-weight:normal;">' + contract + '</label>' +
+                '<input type="text" class="p-inputtext input-sm form-job-action-item" data-jobtype="' + contract + '" value="' + escapeHtml(currentAction) + '" placeholder="Specify repair actions...">' +
+                '</div>';
+        });
+
+        let faultsInputsHtml = '';
+        if (item.faultCodes && item.faultCodes.length > 0) {
+            item.faultCodes.forEach(function(f) {
+                faultsInputsHtml +=
+                    '<div class="fault-row-item" style="display:flex; gap:5px; margin-bottom:5px;">' +
+                    '<input type="text" class="p-inputtext form-fault-system-item" placeholder="System" value="' + escapeHtml(f.system) + '" style="width:40%;">' +
+                    '<input type="text" class="p-inputtext form-fault-code-item" placeholder="Fault Code" value="' + escapeHtml(f.code) + '" style="width:50%;">' +
+                    '<button type="button" class="btn btn-danger remove-fault-row-btn"><i class="fa fa-times"></i></button></div>';
+            });
+        } else {
+            faultsInputsHtml =
+                '<div class="fault-row-item" style="display:flex; gap:5px; margin-bottom:5px;">' +
+                '<input type="text" class="p-inputtext form-fault-system-item" placeholder="System" value="Siebel" style="width:40%;">' +
+                '<input type="text" class="p-inputtext form-fault-code-item" placeholder="Fault Code" style="width:50%;">' +
+                '<button type="button" class="btn btn-danger remove-fault-row-btn"><i class="fa fa-times"></i></button></div>';
+        }
+
+        const formHtml =
+            '<form id="instruction-crud-form">' +
+            '<input type="hidden" id="form-ins-id" value="' + item.id + '">' +
+            '<div class="form-group"><label style="font-weight:600;">Document Title *</label>' +
+            '<input type="text" id="form-title" class="p-inputtext" value="' + escapeHtml(item.title) + '" required></div>' +
+            '<div class="form-group"><label style="font-weight:600;">Device Model / Part Number *</label>' +
+            '<input type="text" id="form-partNumber" class="p-inputtext" value="' + escapeHtml(item.partNumber || '') + '">' +
+                        '<div class="form-group"><label style="font-weight:600;">Category *</label>' +
+            '<input type="text" id="form-category" class="p-inputtext" value="' + escapeHtml(item.category) + '" required></div>' +
+            '<div class="form-group"><label style="font-weight:600;">Subcategory *</label>' +
+            '<input type="text" id="form-subcategory" class="p-inputtext" value="' + escapeHtml(item.subcategory) + '" required></div>' +
+            '<div class="form-group"><label style="font-weight:600;">Symptom *</label>' +
+            '<input type="text" id="form-symptom" class="p-inputtext" value="' + escapeHtml(item.symptom) + '" required></div>' +
+            '<div class="form-group">' +
+            '<label style="font-weight:600;">Photo <span style="color:#94a3b8; font-weight:400;">(optional)</span></label>' +
+            '<div style="display:flex; gap:12px; align-items:flex-start; margin-top:4px;">' +
+            '<div id="photo-drop-zone-edit" style="border:2px dashed #cbd5e1; border-radius:8px; padding:12px 16px; text-align:center; cursor:pointer; background:#fafafa; transition:border-color .2s; min-width:140px; width:140px; display:' + (item.photo ? 'none' : 'flex') + '; flex-direction:column; justify-content:center; align-items:center;">' +
+            '<i class="fa fa-cloud-upload-alt" style="font-size:22px; color:#94a3b8; margin-bottom:6px;"></i>' +
+            '<div style="font-size:11px; font-weight:600; color:#475569;">Upload photo</div>' +
+            '<div style="font-size:10px; color:#94a3b8; margin-top:3px; line-height:1.4;">JPG, PNG, WebP</div>' +
+            '<input type="file" id="form-photo-file-edit" accept="image/jpeg,image/png,image/webp" style="display:none;">' +
+            '</div>' +
+            '<div id="photo-preview-wrap-edit" style="display:' + (item.photo ? 'block' : 'none') + '; position:relative; width:140px;">' +
+            '<img id="photo-preview-img-edit" src="' + escapeHtml(item.photo || '') + '" style="width:140px; height:100px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; display:block;">' +
+            '<button type="button" id="photo-remove-btn-edit" style="position:absolute; top:-8px; right:-8px; background:#ef4444; border:none; border-radius:50%; width:22px; height:22px; color:#fff; font-size:11px; cursor:pointer; line-height:22px; padding:0;"><i class="fa fa-times"></i></button>' +
+            '</div>' +
+            '</div>' +
+            '<input type="hidden" id="form-photo" value="' + escapeHtml(item.photo || '') + '">' +
+            '</div>' +
+            '<div class="form-group"><label style="font-weight:600;">Internal Notes / Guidelines</label>' +
+            '<textarea id="form-notes" class="p-inputtext" rows="3" style="resize:vertical; height:auto;">' + escapeHtml(item.notes || '') + '</textarea></div>' +
+            '<div style="border:1px solid #cbd5e1; padding:12px; border-radius:6px; margin-bottom:15px; background:#f8fafc;">' +
+            '<h5 style="font-weight:700; margin-top:0; color:#1e293b;">Job Types Actions Mapping</h5>' + jobInputsHtml + '</div>' +
+            '<div style="border:1px solid #cbd5e1; padding:12px; border-radius:6px; margin-bottom:15px; background:#f8fafc;">' +
+            '<h5 style="font-weight:700; margin-top:0; color:#1e293b;">Fault Codes Mapping</h5>' +
+            '<div id="form-faults-wrapper">' + faultsInputsHtml + '</div>' +
+            '<button type="button" id="add-fault-row-btn" class="btn btn-xs btn-default" style="margin-top:5px;"><i class="fa fa-plus"></i> Add Fault Code</button></div>' +
+            '<div style="margin-top:20px; text-align:right;">' +
+            '<button type="button" class="btn btn-default" id="btn-sidebar-cancel" style="margin-right:5px;">Cancel</button>' +
+            '<button type="submit" class="p-button" style="background:#3b82f6; border-color:#3b82f6; border-radius:4px;">Update Document</button></div>' +
+            '</form>';
+
+        openSidebar('Edit Instruction', formHtml);
+    });
+
+    // ─── SIDEBAR FORM CONTROLS ────────────────────────────────────────────────
+    $(document).on('click', '#btn-sidebar-cancel', closeSidebar);
+
+    $(document).on('click', '#add-fault-row-btn', function() {
+        $('#form-faults-wrapper').append(buildFaultRow('Siebel', ''));
+    });
+
+    $(document).on('click', '.remove-fault-row-btn', function() {
+        if ($('.fault-row-item').length > 1) { $(this).closest('.fault-row-item').remove(); }
+    });
+
+    // ─── CRUD: SAVE ───────────────────────────────────────────────────────────
+    $(document).on('submit', '#instruction-crud-form', function(e) {
+        e.preventDefault();
+        const targetId = $('#form-ins-id').val();
+
+        // Collect job types — support both new table rows and old CONTRACT_TYPES mapping
+        const collectedJobs = [];
+        if ($('.jobtype-row-item').length > 0) {
+            // New form: table rows with explicit job type + action inputs
+            $('.jobtype-row-item').each(function() {
+                const jt  = $(this).find('.form-job-type-item').val().trim();
+                const act = $(this).find('.form-job-action-item').val().trim();
+                if (jt !== '' && act !== '') { collectedJobs.push({ jobType: jt, action: act }); }
+            });
+        } else {
+            // Edit form: old CONTRACT_TYPES style (data-jobtype attribute)
+            $('.form-job-action-item').each(function() {
+                const actionVal = $(this).val().trim();
+                if (actionVal !== '') {
+                    collectedJobs.push({ jobType: $(this).data('jobtype'), action: actionVal });
+                }
+            });
+        }
+
+        const collectedFaults = [];
+        $('.fault-row-item').each(function() {
+            const sys  = $(this).find('.form-fault-system-item').val().trim();
+            const code = $(this).find('.form-fault-code-item').val().trim();
+            if (sys !== '' && code !== '') { collectedFaults.push({ system: sys, code: code }); }
+        });
+
+        const payload = {
+            title:       $('#form-title').val().trim(),
+            partNumber: $('#form-partNumber').val().trim(),
+            groups: $('#form-groups').val().trim().split(',').map(g => g.trim()).filter(g => g),
+            category:    $('#form-category').val().trim(),
+            subcategory: $('#form-subcategory').val().trim(),
+            symptom:     $('#form-symptom').val().trim(),
+            photo:       $('#form-photo').val().trim(),
+            notes:       $('#form-notes').val().trim(),
+            jobTypes:    collectedJobs,
+            faultCodes:  collectedFaults,
+            updatedAt:   new Date().toISOString().split('T')[0]
+        };
+
+        if (targetId) {
+            const idx = instructions.findIndex(function(ins) { return ins.id === targetId; });
+            if (idx !== -1) { instructions[idx] = Object.assign({}, instructions[idx], payload); }
+        } else {
+            const maxNum = Math.max.apply(null, instructions.map(function(o) {
+                const num = parseInt(o.id.replace('INS-', ''));
+                return isNaN(num) ? 0 : num;
+            }).concat([0]));
+            payload.id = 'INS-' + String(maxNum + 1).padStart(3, '0');
+            instructions.unshift(payload);
+        }
+
+        persistStore();
+        closeSidebar();
+        runSmartSearch();
+    });
+
+    // ─── CRUD: DELETE ─────────────────────────────────────────────────────────
+    $(document).on('click', '.delete-ins-trigger', function(e) {
+        e.stopPropagation();
+        const id = $(this).data('id').toString();
+        if (confirm('Are you sure you want to delete this document permanently?')) {
+            instructions = instructions.filter(function(ins) { return ins.id !== id; });
+            persistStore();
+            runSmartSearch();
+        }
+    });
+
+    // ─── UTILS ────────────────────────────────────────────────────────────────
+    function escapeHtml(string) {
+        return String(string)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    // ─── INIT ─────────────────────────────────────────────────────────────────
+    runSmartSearch();
+
+});
+
+});
+
+// ═══════════════════════════════════════════════════════════════
+// CLOSE BUTTON HANDLER
+// ═══════════════════════════════════════════════════════════════
+
+// ─── PHOTO DROP ZONE HANDLERS FOR EDIT FORM ───────────────────
+$(document).on('click', '#photo-drop-zone-edit', function() {
+    $('#form-photo-file-edit').click();
+});
+
+$(document).on('dragover', '#photo-drop-zone-edit', function(e) {
+    e.preventDefault();
+    $(this).css('border-color', '#3b82f6');
+});
+
+$(document).on('dragleave', '#photo-drop-zone-edit', function() {
+    $(this).css('border-color', '#cbd5e1');
+});
+
+$(document).on('drop', '#photo-drop-zone-edit', function(e) {
+    e.preventDefault();
+    $(this).css('border-color', '#cbd5e1');
+    var file = e.originalEvent.dataTransfer.files[0];
+    if (file) handleEditPhotoFile(file);
+});
+
+$(document).on('change', '#form-photo-file-edit', function() {
+    if (this.files[0]) handleEditPhotoFile(this.files[0]);
+});
+
+$(document).on('click', '#photo-remove-btn-edit', function(e) {
+    e.stopPropagation();
+    $('#photo-preview-wrap-edit').hide();
+    $('#photo-drop-zone-edit').show();
+    $('#form-photo').val('');
+});
+
+function handleEditPhotoFile(file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        $('#photo-preview-img-edit').attr('src', e.target.result);
+        $('#photo-preview-wrap-edit').show();
+        $('#photo-drop-zone-edit').hide();
+        $('#form-photo').val(e.target.result);
+    };
+    reader.readAsDataURL(file);
+}
+
+
+$(document).on('click', 'button:contains("Close")', function() {
+    if (typeof window.closeCCMPanel === 'function') {
+        window.closeCCMPanel();
+        console.log('✓ Close button clicked, closing CCM panel');
+    }
+});
+</script>
