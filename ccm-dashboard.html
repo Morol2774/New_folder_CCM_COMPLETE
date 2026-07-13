@@ -1,24 +1,14 @@
-<!-- CCM Dashboard Fragment
-All styles, HTML, and scripts for RepairDocs
-Loaded into index.html panel via fetch()
--->
-
 <style>
 
-        html, body { height: 100%; }
-        body {
-            font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-weight: 400;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
-        .content {
+        #ccm-panel { font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; }
+
+        #ccm-panel .content {
             min-height: 250px;
-            padding: 0;
+            padding: 15px;
             margin: 0;
         }
 
-        :root {
+        #ccm-panel {
             --surface-ground: #eff3f8;
             --surface-card: #ffffff;
             --surface-border: #dfe7ef;
@@ -26,7 +16,7 @@ Loaded into index.html panel via fetch()
         }
 
         /* Input */
-        body .p-inputtext {
+        #ccm-panel .p-inputtext {
             border: 1px solid #d2d6de;
             width: 100%;
             padding: .75rem;
@@ -35,15 +25,15 @@ Loaded into index.html panel via fetch()
             transition: background-color .2s, color .2s, border-color .2s, box-shadow .2s;
             appearance: none;
         }
-        body .p-inputtext:enabled:hover { border-color: #3b82f6; }
-        body .p-inputtext:enabled:focus {
+        #ccm-panel .p-inputtext:enabled:hover { border-color: #3b82f6; }
+        #ccm-panel .p-inputtext:enabled:focus {
             outline: 0 none;
             outline-offset: 0;
             box-shadow: 0 0 0 .2rem #bfdbfe;
             border-color: #3b82f6;
         }
 
-        .p-button {
+        #ccm-panel .p-button {
             color: #fff;
             background: #3c8dbc;
             border: 1px solid #3c8dbc;
@@ -53,7 +43,7 @@ Loaded into index.html panel via fetch()
         }
 
         /* Cards */
-        .instruction-card-item {
+        #ccm-panel .instruction-card-item {
             background: #fff;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
@@ -62,29 +52,29 @@ Loaded into index.html panel via fetch()
             cursor: pointer;
             transition: all 0.2s;
         }
-        .instruction-card-item:hover {
+        #ccm-panel .instruction-card-item:hover {
             border-color: #3b82f6;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         }
-        .card-header-summary {
+        #ccm-panel .card-header-summary {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 8px;
         }
-        .card-title-block {
+        #ccm-panel .card-title-block {
             display: flex;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
         }
-        .card-title-text {
+        #ccm-panel .card-title-text {
             font-size: 15px;
             font-weight: 600;
             color: #1e293b;
         }
-        .model-badge {
+        #ccm-panel .model-badge {
             background: #eff6ff;
             color: #1d4ed8;
             padding: 4px 8px;
@@ -93,7 +83,7 @@ Loaded into index.html panel via fetch()
             font-weight: 600;
             display: inline-block;
         }
-        .meta-badge {
+        #ccm-panel .meta-badge {
             background: #f1f5f9;
             color: #475569;
             padding: 4px 8px;
@@ -101,32 +91,32 @@ Loaded into index.html panel via fetch()
             font-size: 12px;
             display: inline-block;
         }
-        .card-details-expanded {
+        #ccm-panel .card-details-expanded {
             display: none;
             margin-top: 15px;
             padding-top: 15px;
             border-top: 1px dashed #e2e8f0;
             cursor: default;
         }
-        .table-jobs, .table-faults {
+        #ccm-panel .table-jobs, #ccm-panel .table-faults {
             width: 100%;
             margin-top: 8px;
             margin-bottom: 15px;
             border-collapse: collapse;
         }
-        .table-jobs th, .table-jobs td,
-        .table-faults th, .table-faults td {
+        #ccm-panel .table-jobs th, #ccm-panel .table-jobs td,
+        #ccm-panel .table-faults th, #ccm-panel .table-faults td {
             border: 1px solid #cbd5e1;
             padding: 8px;
             font-size: 13px;
             text-align: left;
         }
-        .table-jobs th, .table-faults th {
+        #ccm-panel .table-jobs th, #ccm-panel .table-faults th {
             background-color: #f8fafc;
             color: #334155;
             font-weight: 600;
         }
-        .notes-block {
+        #ccm-panel .notes-block {
             background-color: #fffbeb;
             border-left: 4px solid #f59e0b;
             padding: 10px;
@@ -136,88 +126,72 @@ Loaded into index.html panel via fetch()
             color: #451a03;
         }
 
-        /* Sidebar */
-        .p-sidebar-right {
-            min-width: 28em;
-            width: 450px;
-            position: fixed;
-            right: -450px;
-            top: 0;
-            height: 100%;
-            background: #fff;
-            box-shadow: -2px 0 8px rgba(0,0,0,0.15);
-            transition: right 0.3s ease;
-            z-index: 1050;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        .p-sidebar-active { right: 0 !important; }
-        .sidebar-backdrop {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3);
-            z-index: 1040;
-            display: none;
-        }
-        .sidebar-backdrop.show-backdrop { display: block; }
-        .custom-sidebar-header-block {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #f4f4f4;
-        }
-
         /* Pagination info text */
-        #pagination-info {
+        #ccm-panel #pagination-info {
             font-size: 13px;
             color: #555;
         }
-    
 
-        /* Override Bootstrap col padding */
-        .col-md-4, .col-md-6, .col-md-12 {
-            padding: 0 !important;
+        /* ── Right sidebar (Create/Edit form panel) ─────────────────────────── */
+        #sidebar-shadow {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 2050;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s ease;
         }
-        
-        .col-xs-12, .col-sm-12 {
-            padding: 0 !important;
+        #sidebar-shadow.show-backdrop {
+            opacity: 1;
+            pointer-events: auto;
         }
-        
-        .row {
-            margin: 0 !important;
+        #custom-right-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 520px;
+            max-width: 92vw;
+            height: 100%;
+            background: #fff;
+            z-index: 2100;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.2);
+            transform: translateX(100%);
+            transition: transform .3s cubic-bezier(0.4,0,0.2,1);
+            display: flex;
+            flex-direction: column;
         }
-        
-        /* Remove wrapper padding */
-        .wrapper {
-            padding: 0 !important;
-            margin: 0 !important;
+        #custom-right-sidebar.p-sidebar-active {
+            transform: translateX(0);
         }
-        
-        /* Full width */
-        body {
-            margin: 0 !important;
-            padding: 0 !important;
+        #custom-right-sidebar .sidebar-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            flex-shrink: 0;
         }
-
-        
-        /* Keep sidebar visible even when CCM is open */
-.sidebar, .main-sidebar {
-    display: block !important;
-    visibility: visible !important;
-    width: auto !important;
-    margin-left: 0 !important;
-}
-/* Hide sidebar */
-        .p-sidebar-left, .left-sidebar, .sidebar {
-            display: none !important;
+        #custom-right-sidebar .sidebar-panel-header h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
         }
-        
-        /* Full width for content */
-        .wrapper, .content-wrapper {
-            margin-left: 0 !important;
-            width: 100% !important;
+        #close-sidebar-x-btn {
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            color: #64748b;
+            background: none;
+            border: none;
+            padding: 4px 8px;
+        }
+        #close-sidebar-x-btn:hover { color: #1e293b; }
+        #sidebar-dynamic-content-area {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1 1 auto;
         }
 
         </style>
@@ -242,6 +216,21 @@ Loaded into index.html panel via fetch()
 
                         <div class="box-body">
 
+                            <!-- Serial / RO # Lookup -->
+                            <div class="row" style="margin-bottom: 20px;">
+                                <div class="col-md-12">
+                                    <div style="background:#fff; border:1px solid #d2d6de; border-radius:3px; padding:15px;">
+                                        <label style="margin-bottom:8px;">Serial / RO #</label>
+                                        <div style="display:flex; gap:8px; max-width:420px;">
+                                            <input type="text" id="unit-summary-lookup-input" class="p-inputtext" placeholder="Enter Serial / RO # to repair...">
+                                            <button type="button" id="unit-summary-lookup-btn" class="p-button">
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Search Fields -->
                             <div class="row" style="gap: 15px; display: flex;">
                                 <div class="col-md-4" style="flex: 1; min-width: 0;">
@@ -250,15 +239,14 @@ Loaded into index.html panel via fetch()
                                         <input type="text" id="search-partNumber" class="p-inputtext" placeholder="e.g. GENERIC, ABC123">
                             </div>
                             <div style="margin-bottom:10px;">
-                                 <label>Category:</label>
-                                         <input type="text" id="search-category" class="p-inputtext" placeholder="e.g. Card Printers, Printer">
+                                <label>Category:</label>
+                                <input type="text" id="search-category" class="p-inputtext" placeholder="e.g. Card Printers, Printer">
                             </div>
                                 </div>
                                 <div class="col-md-4" style="flex: 1; min-width: 0;">
                                     <div class="form-group">
-                                        
-                                            <label>Component(optional)</label>
-                                <input type="text" id="search-component" class="p-inputtext" placeholder="e.g. Screen, Motherboard...">
+                                        <label>Component / Category (optional)</label>
+                                        <input type="text" id="search-component" class="p-inputtext" placeholder="e.g. Screen, Motherboard...">
                                     </div>
                                 </div>
                                 <div class="col-md-4" style="flex: 1; min-width: 0;">
@@ -327,19 +315,17 @@ Loaded into index.html panel via fetch()
 
 </div><!-- /.wrapper -->
 
-<!-- Sidebar backdrop -->
-<div class="sidebar-backdrop" id="sidebar-shadow"></div>
-
-<!-- Right Sidebar -->
-<div class="p-sidebar-right" id="custom-right-sidebar">
-    <div class="custom-sidebar-header-block">
-        <h4 id="sidebar-panel-title" style="margin: 0; font-weight:700; color:#1e293b;">Instruction Details</h4>
-        <button type="button" id="close-sidebar-x-btn" class="btn btn-sm btn-default" style="border-radius:50%; width:30px; height:30px; padding:0;">
-            <span class="fa fa-times"></span>
-        </button>
+<!-- Right sidebar panel used by openSidebar()/closeSidebar() for Create/Edit forms.
+     This markup was completely missing before, which is why Create/Edit visually did nothing. -->
+<div id="sidebar-shadow"></div>
+<div id="custom-right-sidebar">
+    <div class="sidebar-panel-header">
+        <h4 id="sidebar-panel-title"></h4>
+        <button type="button" id="close-sidebar-x-btn">&times;</button>
     </div>
-    <div class="p-sidebar-content" id="sidebar-dynamic-content-area"></div>
+    <div id="sidebar-dynamic-content-area"></div>
 </div>
+
 
 <!-- jQuery -->
 
@@ -602,6 +588,12 @@ $(document).ready(function() {
             return '<option value="' + c + '">' + c + '</option>';
         }).join('');
 
+        // Job type rows are now built from CONTRACT_TYPES (same source the Edit form uses)
+        // so the text always matches and actions saved via Create show up correctly in Edit.
+        const fixedJobRowsHtml = CONTRACT_TYPES.map(function(contract) {
+            return buildFixedJobRow(contract);
+        }).join('');
+
         const formHtml =
             '<form id="instruction-crud-form">' +
             '<input type="hidden" id="form-ins-id" value="">' +
@@ -666,12 +658,7 @@ $(document).ready(function() {
             '<th style="padding:8px 10px; font-size:12px; font-weight:700; color:#475569; border-bottom:1px solid #e2e8f0; width:50%;">Required Action</th>' +
             '</tr></thead>' +
             '<tbody id="form-jobtypes-wrapper">' +
-            buildFixedJobRow('Billable (Fixed Price Repair)') +
-            buildFixedJobRow('Comprehensive Coverage Repair') +
-            buildFixedJobRow('Non-comprehensive coverage repair / Z1C SV Contract (selected products) / Non-Billable') +
-            buildFixedJobRow('Spare pool repair as new') +
-            buildFixedJobRow('Spare pool repair as standard') +
-            buildFixedJobRow('Warranty repair') +
+            fixedJobRowsHtml +
             '</tbody></table></div>' +
             '</div>' +
 
@@ -691,12 +678,16 @@ $(document).ready(function() {
             '<button type="button" id="add-fault-row-btn" class="btn btn-xs btn-default" style="margin-top:6px;"><i class="fa fa-plus"></i> Add row</button>' +
             '</div>' +
 
+            // Groups
+            '<div class="form-group">' +
+            '<label style="font-weight:600;">Groups (comma-separated)</label>' +
+            '<input type="text" id="form-groups" class="p-inputtext" placeholder="e.g. group1, group2">' +
+            '</div>' +
+
             // Notes
             '<div class="form-group">' +
             '<label style="font-weight:600;">Notes / Tips <span style="color:#94a3b8; font-weight:400;">(optional)</span></label>' +
-            '<label>Groups (comma-separated):</label>' +
-            '<input type="text" id="form-groups" class="p-inputtext" placeholder="e.g. group1, group2" style="margin-bottom:10px;width:100%;padding:5px;border:1px solid #ddd;border-radius:3px">' +
-            
+            '<textarea id="form-notes" class="p-inputtext" rows="3" style="resize:vertical; height:auto;"></textarea>' +
             '</div>' +
 
             // Buttons
@@ -828,8 +819,8 @@ $(document).ready(function() {
             '<div class="form-group"><label style="font-weight:600;">Document Title *</label>' +
             '<input type="text" id="form-title" class="p-inputtext" value="' + escapeHtml(item.title) + '" required></div>' +
             '<div class="form-group"><label style="font-weight:600;">Device Model / Part Number *</label>' +
-            '<input type="text" id="form-partNumber" class="p-inputtext" value="' + escapeHtml(item.partNumber || '') + '">' +
-                        '<div class="form-group"><label style="font-weight:600;">Category *</label>' +
+            '<input type="text" id="form-partNumber" class="p-inputtext" value="' + escapeHtml(item.partNumber || '') + '"></div>' +
+            '<div class="form-group"><label style="font-weight:600;">Category *</label>' +
             '<input type="text" id="form-category" class="p-inputtext" value="' + escapeHtml(item.category) + '" required></div>' +
             '<div class="form-group"><label style="font-weight:600;">Subcategory *</label>' +
             '<input type="text" id="form-subcategory" class="p-inputtext" value="' + escapeHtml(item.subcategory) + '" required></div>' +
@@ -851,6 +842,8 @@ $(document).ready(function() {
             '</div>' +
             '<input type="hidden" id="form-photo" value="' + escapeHtml(item.photo || '') + '">' +
             '</div>' +
+            '<div class="form-group"><label style="font-weight:600;">Groups (comma-separated)</label>' +
+            '<input type="text" id="form-groups" class="p-inputtext" value="' + escapeHtml((item.groups || []).join(', ')) + '" placeholder="e.g. group1, group2"></div>' +
             '<div class="form-group"><label style="font-weight:600;">Internal Notes / Guidelines</label>' +
             '<textarea id="form-notes" class="p-inputtext" rows="3" style="resize:vertical; height:auto;">' + escapeHtml(item.notes || '') + '</textarea></div>' +
             '<div style="border:1px solid #cbd5e1; padding:12px; border-radius:6px; margin-bottom:15px; background:#f8fafc;">' +
